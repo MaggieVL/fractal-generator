@@ -71,9 +71,9 @@ void calc(Offset offset, Bitmap bitmap, bool quiet) {
                                lowerY + (upperY - lowerY) * y / (height - 1));
       iter = iteration(c);
       pixel = bitmap.pixels + width * y + x;
-      pixel->red = rgb_value(1000 - iter, 1000);
-      pixel->green = rgb_value(500 - iter, 1000);
-      pixel->blue = rgb_value(200 - iter, 1000);
+      pixel->red = rgb_value(iter - 370, 1000);
+      pixel->green = rgb_value(0, 1000);
+      pixel->blue = rgb_value(0, 1000);
     }
   }
 
