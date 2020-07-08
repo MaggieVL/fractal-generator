@@ -81,11 +81,11 @@ void calc(Offset offset, Bitmap bitmap, bool quiet) {
     printf("Thread-%d:%d on block %d:%d finished.\n", threadIdx.x, threadIdx.y, blockIdx.x, blockIdx.y);
 }
 
-void threadConfigCalc(int maxThreads, int width, int height, int &threadsPerBlock1dim1, int &threadsPerBlock1dim2, int &numBlocksX, int &numBlocksY, bool quiet = false) {
+void threadConfigCalc(int maxThreads, int width, int height, int &threadsPerBlock1dim1, int &numBlocksX, int &numBlocksY, bool quiet = false) {
   double sqroot = sqrt(maxThreads);
-  threadsPerBlock1dim = exp2(fmin(floor(log2(sqroot)), 4));
-  numBlocksY = floor(sqroot / threadsPerBlock1dim);
-  numBlocksX = floor((double)maxThreads / (threadsPerBlock1dim * threadsPerBlock1dim * numBlocksY));
+  threadsPerBlock1dim1 = exp2(fmin(floor(log2(sqroot)), 4));
+  numBlocksY = floor(sqroot / threadsPerBlock1dim1);
+  numBlocksX = floor((double)maxThreads / (threadsPerBlock1dim1 * threadsPerBlock1dim1 * numBlocksY));
 
   // threadsPerBlock1dim1 = threadsX;
   // threadsPerBlock1dim2 = threadsY;
@@ -94,7 +94,7 @@ void threadConfigCalc(int maxThreads, int width, int height, int &threadsPerBloc
 
   // if (!quiet)
     printf("Threads used in current run: %d, threadsPerBlock: %dx%d, numBlocksXxnumBlocksY: %dx%d\n",
-    threadsPerBlock1dim1 * threadsPerBlock1dim2 * numBlocksX * numBlocksY, threadsPerBlock1dim1, threadsPerBlock1dim2, numBlocksX, numBlocksY);
+    threadsPerBlock1dim1 * threadsPerBlock1dim1 * numBlocksX * numBlocksY, threadsPerBlock1dim1, threadsPerBlock1dim1, numBlocksX, numBlocksY);
 }
 
 double cpuSecondMonolitic() {
@@ -110,10 +110,10 @@ void generateImage(int width, int height, Offset offset, int maxThreads, const c
   size_t pixelsSize = pixelsCount * sizeof(Pixel);
   cudaMalloc(&bitmap.pixels, pixelsSize);
 
-  int threadsPerBlock1dim1, threadsPerBlock1dim2, numBlocksX, numBlocksY;
-  threadConfigCalc(maxThreads, bitmap.width, bitmap.height, threadsPerBlock1dim1, threadsPerBlock1dim2, numBlocksX, numBlocksY, quiet);
+  int threadsPerBlock1dim1, numBlocksX, numBlocksY;
+  threadConfigCalc(maxThreads, bitmap.width, bitmap.height, threadsPerBlock1dim1, numBlocksX, numBlocksY, quiet);
 
-  dim3 threadsPerBlock(threadsPerBlock1dim1, threadsPerBlock1dim2);
+  dim3 threadsPerBlock(threadsPerBlock1dim1, threadsPerBlock1dim1);
   dim3 numBlocks(numBlocksX, numBlocksY);
 
   // TIMINGS
