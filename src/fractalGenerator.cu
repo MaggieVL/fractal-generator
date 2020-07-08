@@ -38,7 +38,7 @@ int iteration(cuDoubleComplex c, int limit = 1000) {
     double a = cuCreal(z);
     double b = cuCimag(z);
     cuDoubleComplex cosine = make_cuDoubleComplex(cos(a) * cosh(b), -(sin(a) * sinh(b)));
-    z = cuCmul(c, cosine(z));
+    z = cuCmul(c, cosine);
     ++i;
   }
 
